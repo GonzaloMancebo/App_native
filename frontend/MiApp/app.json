@@ -9,7 +9,11 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Esta aplicación necesita acceder a tu ubicación para mostrar canchas de fútbol cercanas.",
+        "NSLocationAlwaysUsageDescription": "Esta aplicación necesita acceso continuo a tu ubicación."
+      }
     },
     "android": {
       "adaptiveIcon": {

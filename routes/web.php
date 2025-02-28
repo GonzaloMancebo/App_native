@@ -1,14 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
-});
-
-
-Route::get('/test', function () {
-    return response()->json(['message' => 'API funcionando']);
-    
+    return view('welcome');  // Esta es una ruta típica de una página web
 });
