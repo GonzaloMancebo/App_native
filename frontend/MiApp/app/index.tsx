@@ -1,11 +1,12 @@
-// App.js
 import React from 'react';
-import Navigation from '../navigation/Navigation';  // Importa el archivo de navegación
+import Navigation from '../navigation/Navigation';  
+import { StatusBar, View } from 'react-native';  
 
 export default function App() {
   return (
-  <Navigation />
-
-)
-  
+    <View style={{ flex: 1 }}>  
+      <StatusBar barStyle="dark-content" />
+      <Navigation />
+    </View>
+  );
 }

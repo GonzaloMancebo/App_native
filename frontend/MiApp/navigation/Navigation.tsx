@@ -1,14 +1,13 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '@/components/HomeScreen';  // Ajusta las rutas de acuerdo a tu estructura
-import MapScreen from '@/screens/MapScreen';   // Ajusta las rutas de acuerdo a tu estructura
-import ProfileScreen from '@/screens/ProfileScreen'; // Perfil
-import FavoritesScreen from '@/screens/FavoritesScreen'; // Favoritos
-import DashboardScreen from '@/screens/DashboardScreen';  // Asegúrate de importar DashboardScreen
-
-// Importa los iconos desde react-native-vector-icons
-import { Ionicons } from 'react-native-vector-icons';  // Puedes usar diferentes familias de iconos como Ionicons, FontAwesome, etc.
+import HomeScreen from '@/components/HomeScreen';  
+import MapScreen from '@/screens/MapScreen';   
+import ProfileScreen from '@/screens/ProfileScreen'; 
+import FavoritesScreen from '@/screens/FavoritesScreen'; 
+import DashboardScreen from '@/screens/DashboardScreen';  
+import Icon from '@expo/vector-icons/MaterialIcons';  
+import ChatScreen from '@/screens/ChatScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -21,7 +20,16 @@ function DashboardTabs() {
         component={DashboardScreen} 
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} />
+            <Icon name="home" size={size} color={color} />
+          ),
+        }} 
+      />
+      <Tab.Screen 
+        name="Chat" 
+        component={ChatScreen} 
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="chat" size={size} color={color} />
           ),
         }} 
       />
@@ -30,7 +38,7 @@ function DashboardTabs() {
         component={MapScreen} 
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="map" size={size} color={color} />
+            <Icon name="map" size={size} color={color} />
           ),
         }} 
       />
@@ -39,7 +47,7 @@ function DashboardTabs() {
         component={FavoritesScreen} 
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="heart" size={size} color={color} />
+            <Icon name="favorite" size={size} color={color} /> 
           ),
         }} 
       />
@@ -48,10 +56,11 @@ function DashboardTabs() {
         component={ProfileScreen} 
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" size={size} color={color} />
+            <Icon name="person" size={size} color={color} />
           ),
         }} 
       />
+      
     </Tab.Navigator>
   );
 }
@@ -60,8 +69,8 @@ export default function Navigation() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} />
-      {/* Esta pantalla se reemplaza con el DashboardTabs si se cumple la lógica en HomeScreen */}
       <Stack.Screen name="Dashboard" component={DashboardTabs} />
+      <Stack.Screen name='Chat' component={ChatScreen} />
     </Stack.Navigator>
   );
 }
