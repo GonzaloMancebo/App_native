@@ -7,6 +7,7 @@ import ProfileScreen from '@/screens/ProfileScreen';
 import FavoritesScreen from '@/screens/FavoritesScreen'; 
 import DashboardScreen from '@/screens/DashboardScreen';  
 import Icon from '@expo/vector-icons/MaterialIcons';  
+import ChatDashboardScreen from '@/screens/ChatDashboardScreen';
 import ChatScreen from '@/screens/ChatScreen';
 
 const Stack = createStackNavigator();
@@ -26,7 +27,7 @@ function DashboardTabs() {
       />
       <Tab.Screen 
         name="Chat" 
-        component={ChatScreen} 
+        component={ChatDashboardScreen} 
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon name="chat" size={size} color={color} />
@@ -68,9 +69,10 @@ function DashboardTabs() {
 export default function Navigation() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="Dashboard" component={DashboardTabs} />
-      <Stack.Screen name='Chat' component={ChatScreen} />
+      <Stack.Screen name='Home' component={HomeScreen} />
+      <Stack.Screen name='Dashboard' component={DashboardTabs} />
+      <Stack.Screen name='ChatScreen' component={ChatScreen} />
+      <Stack.Screen name = 'DashboardChatScreen' component ={ChatDashboardScreen} />
     </Stack.Navigator>
   );
 }

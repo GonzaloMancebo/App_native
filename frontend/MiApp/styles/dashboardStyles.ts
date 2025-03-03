@@ -6,7 +6,7 @@ export const dashboardStyles = StyleSheet.create({
     container: {
       flex: 1,
       padding: 16,
-      paddingTop: Platform.OS === 'ios' ? 80 : 0, // Usamos paddingTop en lugar de marginTop
+      paddingTop: Platform.OS === 'ios' ? 80 : 0, 
       backgroundColor: '#fff',
     },
     logo: {
@@ -69,10 +69,9 @@ export const dashboardStyles = StyleSheet.create({
       fontSize: 18,
       fontWeight: 'bold',
     },
-    // Cambiado para alinear los elementos de la tarjeta de usuario en columna
     userActions: {
       flexDirection: 'column',
-      alignItems: 'center',  // Centra los botones debajo de la información
+      alignItems: 'center',  
       justifyContent: 'center',
     },
     chatButton: {
@@ -81,7 +80,7 @@ export const dashboardStyles = StyleSheet.create({
       borderRadius: 5,
       backgroundColor: '#4CAF50',
       alignItems: 'center',
-      width: '100%',  // Para que el botón ocupe todo el ancho disponible
+      width: '100%',  
     },
     chatButtonText: {
       color: '#fff',
@@ -90,4 +89,4 @@ export const dashboardStyles = StyleSheet.create({
   });
   
 
-export { screenWidth, screenHeight };  // ✅ Exporta estos valores numéricos aparte
+export { screenWidth, screenHeight };  

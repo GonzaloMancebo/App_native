@@ -3,6 +3,8 @@ import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
 import { dashboardStyles, screenWidth, screenHeight } from '@/styles/dashboardStyles';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import { RootStackParamList } from '@/navigation/types';  
+import { StackNavigationProp } from '@react-navigation/stack';
 
 // Definir la interfaz User
 interface User {
@@ -18,7 +20,9 @@ interface User {
 export default function DashboardScreen() {
   const [users, setUsers] = useState<User[]>([]);
   const [genderFilter, setGenderFilter] = useState('all');
-  const navigation = useNavigation();
+  
+  // Tipamos la navegación correctamente
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'ChatScreen'>>();  
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -59,8 +63,8 @@ export default function DashboardScreen() {
         {['Hombre', 'Mujer', 'Ambos'].map((filter) => (
           <TouchableOpacity
             key={filter}
-            style={[
-              dashboardStyles.filterButton,
+            style={[ 
+              dashboardStyles.filterButton, 
               genderFilter === (filter === 'Hombre' ? 'male' : filter === 'Mujer' ? 'female' : 'all') && {
                 backgroundColor: '#66b3ff', // Color de fondo cuando está seleccionado
               }
@@ -97,7 +101,16 @@ export default function DashboardScreen() {
             </View>
             <View style={dashboardStyles.userActions}>
               {item.available && (
-                <TouchableOpacity style={dashboardStyles.chatButton}>
+                <TouchableOpacity 
+                  style={dashboardStyles.chatButton}
+                  onPress={() => {
+                    navigation.navigate('ChatScreen', {
+                      userId: item.id,
+                      userName: item.name,
+                      userImage: item.image, 
+                    });
+                  }}
+                >
                   <Text style={dashboardStyles.chatButtonText}>Chatear</Text>
                 </TouchableOpacity>
               )}
