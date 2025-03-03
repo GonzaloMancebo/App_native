@@ -18,9 +18,18 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            
+            // Campos adicionales
+            $table->enum('gender', ['male', 'female']);  // Para el género
+            $table->integer('age')->nullable();  // Edad
+            $table->string('position')->nullable();  // Posición (por ejemplo: delantero, defensa, etc.)
+            $table->boolean('available')->default(true);  // Disponibilidad (true o false)
+            $table->string('image')->nullable();  // Imagen del usuario (URL o ruta al archivo de imagen)
+            
             $table->timestamps();
         });
 
+        // Otras tablas relacionadas (tokens de reset de contraseña, sesiones)
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
