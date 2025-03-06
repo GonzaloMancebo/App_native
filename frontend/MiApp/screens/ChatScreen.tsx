@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FlatList, Text, TextInput, TouchableOpacity, View, Image, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import { useNavigation, RouteProp } from '@react-navigation/native';
-import moment from 'moment';
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import moment from 'moment';  // Importamos moment
 import axios from 'axios';  // Importamos Axios
 import { chatStyles } from '@/styles/chatStyles';
 import { RootStackParamList } from '@/navigation/types';
@@ -16,13 +17,13 @@ interface Message {
 }
 
 type ChatScreenProps = {
-  route: RouteProp<RootStackParamList, 'ChatScreen'>;
+  route: RouteProp<RootStackParamList, 'ChatScreen'>;  // Aquí especificas el tipo de route para 'ChatScreen'
+  navigation: StackNavigationProp<RootStackParamList, 'ChatScreen'>; // Aquí especificas el tipo de navigation
 };
 
-export default function ChatScreen({ route }: ChatScreenProps) {
+const ChatScreen: React.FC<ChatScreenProps> = ({ route, navigation }) => {
   const { userId, userName, userImage } = route.params;
   
-  const navigation = useNavigation();
   const [messages, setMessages] = useState<Message[]>([]);  // Cambié el tipo de estado a Message[]
   const [message, setMessage] = useState('');
   const flatListRef = useRef<FlatList<Message>>(null);  // Tipamos la referencia correctamente
@@ -31,7 +32,13 @@ export default function ChatScreen({ route }: ChatScreenProps) {
     axios.get(`http://192.168.0.192:8000/api/chat/${userId}`)
       .then(response => {
         console.log('Mensajes cargados correctamente:', response.data);
-        setMessages(response.data);  // Asumimos que la respuesta es un array de mensajes
+
+        // Ordenamos los mensajes por timestamp antes de setear el estado
+        const sortedMessages = response.data.sort((a: Message, b: Message) => {
+          return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+        });
+
+        setMessages(sortedMessages);  // Asumimos que la respuesta es un array de mensajes
       })
       .catch(error => {
         console.error('Error al cargar los mensajes:', error);
@@ -42,34 +49,38 @@ export default function ChatScreen({ route }: ChatScreenProps) {
   const sendMessage = () => {
     if (message.trim()) {
       const newMessage = {
-        user_id: userId,  // El ID del usuario (recibido desde las props)
+        user_id: userId,  
         message: message,
-        sender: 'me',
-        timestamp: moment().format('YYYY-MM-DD HH:mm:ss'),  // Formato para la base de datos
-        id: ''  // Aún no tiene ID, se lo asignará Laravel
+        sender: 1, 
+        timestamp: moment().format('YYYY-MM-DD HH:mm:ss')
       };
-
-      // Enviar el mensaje a Laravel
-      axios.post('http://192.168.0.192:8000/api/chat', newMessage)
-        .then(response => {
-          console.log('Mensaje enviado correctamente:', response.data);
-
-          // Usamos el ID que Laravel devuelve para el mensaje
-          const savedMessage = { ...newMessage, id: response.data.id };
-          
-          setMessages(prevMessages => [savedMessage, ...prevMessages]);  // Actualizamos la lista de mensajes con el nuevo mensaje
-          setMessage('');  // Limpiamos el campo de entrada
-        })
-        .catch(error => {
-          console.error('Error al enviar el mensaje:', error);
-        });
+  
+      axios.post('http://192.168.0.192:8000/api/chat', newMessage, {
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(response => {
+        console.log('Mensaje enviado correctamente:', response.data);
+  
+        // Agregar el mensaje con el ID devuelto por Laravel
+        setMessages(prevMessages => [...prevMessages, { ...newMessage, id: String(response.data.id) }]);
+        setMessage('');
+      })
+      .catch(error => {
+        console.error('Error al enviar el mensaje:', error.response?.data || error.message);
+      });
     }
   };
   
+
   // Función para manejar el cierre del teclado
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
+
+  useEffect(() => {
+    // Desplazar automáticamente hacia el final después de que los mensajes cambien
+    flatListRef.current?.scrollToEnd({ animated: true });
+  }, [messages]); // Se ejecuta cada vez que la lista de mensajes cambie
 
   return (
     <KeyboardAvoidingView
@@ -82,11 +93,11 @@ export default function ChatScreen({ route }: ChatScreenProps) {
           {/* Botón de regreso */}
           <TouchableOpacity
             style={chatStyles.backButton}
-            onPress={() => navigation.navigate('DashboardChatScreen')}  
+            onPress={() => navigation.goBack()}  
           >
             <Text style={chatStyles.backButtonText}>←</Text>
           </TouchableOpacity>
-          
+
           {/* Header: Imagen y nombre del usuario */}
           <View style={chatStyles.headerContainer}>
             <Image source={{ uri: userImage }} style={chatStyles.userImage} />
@@ -97,16 +108,17 @@ export default function ChatScreen({ route }: ChatScreenProps) {
           <FlatList
             ref={flatListRef}
             data={messages}
-            keyExtractor={(item) => item.id}  // Usamos el id del mensaje como clave
+            keyExtractor={(item) => String(item.id)}  // Asegúrate de convertir el id a string
             renderItem={({ item }) => (
               <View style={[chatStyles.messageContainer, item.sender === 'me' ? chatStyles.myMessage : chatStyles.otherMessage]}>
                 <Text style={chatStyles.messageText}>{item.message}</Text>
-                <Text style={chatStyles.timestamp}>{item.timestamp}</Text>
+                <Text style={chatStyles.timestamp}>
+                  {moment(item.timestamp).calendar()}  {/* Usamos calendar() para formato de calendario */}
+                </Text>
               </View>
             )}
-            inverted
             contentContainerStyle={chatStyles.messageList}
-            onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}  // Asegura el desplazamiento al final
+            onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}  // Desplazarse hacia abajo al final
           />
           
           {/* Campo de entrada y botón de enviar */}
@@ -116,6 +128,7 @@ export default function ChatScreen({ route }: ChatScreenProps) {
               value={message}
               onChangeText={setMessage}
               placeholder="Escribe un mensaje..."
+              placeholderTextColor="gray"
               onSubmitEditing={sendMessage}
               returnKeyType="send"
             />
@@ -128,3 +141,5 @@ export default function ChatScreen({ route }: ChatScreenProps) {
     </KeyboardAvoidingView>
   );
 }
+
+export default ChatScreen;

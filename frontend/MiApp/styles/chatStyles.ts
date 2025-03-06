@@ -46,6 +46,7 @@ export  const chatStyles = StyleSheet.create({
       borderRadius: 10,
       marginVertical: 5,
       position: 'relative',
+      
     },
     myMessage: {
       backgroundColor: '#0078FF',
@@ -65,7 +66,7 @@ export  const chatStyles = StyleSheet.create({
       fontSize: 10,
       position: 'absolute',
       bottom: 5,
-      left: "115%",
+      left: "100%",
     },
     messageList: {
       paddingBottom: 50, // Para dejar espacio para el campo de entrada
@@ -96,6 +97,18 @@ export  const chatStyles = StyleSheet.create({
     sendButtonText: {
       color: '#fff',
       fontWeight: 'bold',
+    },
+
+    dateDivider: {
+      alignSelf: 'center',
+      backgroundColor: '#ddd',
+      paddingVertical: 5,
+      paddingHorizontal: 15,
+      borderRadius: 20,
+      marginVertical: 10,
+      fontWeight: 'bold',
+      fontSize: 12,
+      color: '#888',
     },
     
   });

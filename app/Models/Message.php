@@ -9,7 +9,6 @@ class Message extends Model
 {
     use HasFactory;
 
-    // Indica qué campos se pueden llenar de forma masiva (masse-assignment)
     protected $fillable = [
         'user_id',
         'message',
@@ -17,5 +16,5 @@ class Message extends Model
         'timestamp',
     ];
 
-    
+    protected $dates = ['timestamp'];  // Esto le dice a Eloquent que 'timestamp' es un campo de fecha
 }

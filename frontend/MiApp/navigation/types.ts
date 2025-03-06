@@ -1,4 +1,3 @@
-// navigation/types.ts
 export type RootStackParamList = {
   Home: undefined; 
   Dashboard: undefined;  
@@ -12,4 +11,8 @@ export type RootStackParamList = {
     userName: string;
     userImage: string;
   };
+  Login: undefined;
+  ProfileDashboard: undefined;
+  Register: undefined;
+  ProfileScreen: undefined;  
 };
