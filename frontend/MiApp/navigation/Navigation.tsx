@@ -9,77 +9,83 @@ import DashboardScreen from '@/screens/DashboardScreen';
 import Icon from '@expo/vector-icons/MaterialIcons';
 import ChatDashboardScreen from '@/screens/ChatDashboardScreen';
 import ChatScreen from '@/screens/ChatScreen';
-import RegisterScreen from '@/screens/RegisterScreen';
-import LoginScreen from '@/screens/LoginScreen';
-import ProfileDashboard from '@/screens/ProfileDashboard';
-import { RootStackParamList } from '@/navigation/types';  // Asegúrate de importar correctamente
+import AuthScreen from '@/screens/AuthScreen'; // Importamos AuthScreen
+import { RootStackParamList } from '@/navigation/types'; 
 
-// Crea los tipos de navegación basados en RootStackParamList
-const Stack = createStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator<RootStackParamList>(); 
 const Tab = createBottomTabNavigator();
 
+// TabNavigator para las pantallas principales
 function DashboardTabs() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
-      <Tab.Screen 
-        name="Home" 
-        component={DashboardScreen} 
+      <Tab.Screen
+        name="Home"
+        component={DashboardScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon name="home" size={size} color={color} />
           ),
-        }} 
+        }}
       />
-      <Tab.Screen 
-        name="Chat" 
-        component={ChatDashboardScreen} 
+      <Tab.Screen
+        name="Chat"
+        component={ChatDashboardScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon name="chat" size={size} color={color} />
           ),
-        }} 
+        }}
       />
-      <Tab.Screen 
-        name="Map" 
-        component={MapScreen} 
+      <Tab.Screen
+        name="Map"
+        component={MapScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon name="map" size={size} color={color} />
           ),
-        }} 
+        }}
       />
-      <Tab.Screen 
-        name="Favorites" 
-        component={FavoritesScreen} 
+      <Tab.Screen
+        name="Favorites"
+        component={FavoritesScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Icon name="favorite" size={size} color={color} /> 
+            <Icon name="favorite" size={size} color={color} />
           ),
-        }} 
+        }}
       />
-      <Tab.Screen 
-        name="Profile" 
-        component={ProfileScreen} 
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon name="person" size={size} color={color} />
           ),
-        }} 
+        }}
       />
     </Tab.Navigator>
+  );
+}
+
+// Stack Navigator para las pantallas de Stack, como el Chat y Perfil
+function DashboardStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="DashboardTabs" component={DashboardTabs} />
+      <Stack.Screen name="ChatScreen" component={ChatScreen} />
+    </Stack.Navigator>
   );
 }
 
 export default function Navigation() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {/* Ruta inicial, primero pasa por AuthScreen */}
+      <Stack.Screen name="AuthScreen" component={AuthScreen} />
+      {/* Las pantallas principales, solo se muestran después de iniciar sesión */}
       <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="Dashboard" component={DashboardTabs} /> 
-      <Stack.Screen name="ChatScreen" component={ChatScreen} />
-      <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-      <Stack.Screen name="Register" component={RegisterScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="ProfileDashboard" component={ProfileDashboard} />
+      <Stack.Screen name="Dashboard" component={DashboardStack} />
     </Stack.Navigator>
   );
 }

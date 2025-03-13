@@ -41,9 +41,8 @@ return [
             'provider' => 'users',
         ],
 
-        // Agregar el guardia API para Sanctum
         'api' => [
-            'driver' => 'sanctum',  // Usamos el driver Sanctum
+            'driver' => 'jwt',  
             'provider' => 'users',
         ],
     ],

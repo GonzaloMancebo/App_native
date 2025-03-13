@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use Laravel\Sanctum\HasApiTokens;  // Aquí agregamos el trait
+use Tymon\JWTAuth\Contracts\JWTSubject;  
+use Laravel\Sanctum\HasApiTokens;       
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject  // Implementar la interfaz JWTSubject
 {
-    use HasFactory, Notifiable, HasApiTokens;  // Asegúrate de incluir HasApiTokens aquí
+    use HasFactory, Notifiable, HasApiTokens;  // Asegúrate de usar HasApiTokens
 
     /**
      * The attributes that are mass assignable.
@@ -23,7 +24,7 @@ class User extends Authenticatable
         'gender',
         'age',
         'position',
-        'profile_image', 
+        'image',
     ];
 
     /**
@@ -47,5 +48,17 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Método requerido por la interfaz JWTSubject
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();  // El identificador único del usuario, normalmente el ID
+    }
+
+    // Método requerido por la interfaz JWTSubject
+    public function getJWTCustomClaims()
+    {
+        return [];  // Puedes devolver cualquier reclamo personalizado aquí (si lo necesitas)
     }
 }

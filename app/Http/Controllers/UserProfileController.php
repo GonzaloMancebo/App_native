@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -8,11 +7,27 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 
-
-
 class UserProfileController extends Controller
 {
-    // Método para actualizar el perfil del usuario
+    // Método GET para obtener el perfil del usuario
+    public function getProfile()
+    {
+        // Obtener el usuario autenticado
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not authenticated.'
+            ], 401);  // Devolver un error si no está autenticado
+        }
+
+        // Devolver solo el nombre del usuario o cualquier otro dato que necesites
+        return response()->json([
+            'name' => $user->name
+        ], 200);
+    }
+
+    // Método POST para actualizar el perfil del usuario
     public function updateProfile(Request $request)
     {
         // Validación de los datos del perfil
@@ -20,7 +35,7 @@ class UserProfileController extends Controller
             'gender' => 'required|string',
             'age' => 'required|integer|min:18',
             'position' => 'required|string',
-            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Imagen opcional
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Imagen opcional
         ]);
 
         // Si hay errores de validación, devolver respuesta con errores
@@ -33,6 +48,7 @@ class UserProfileController extends Controller
 
         // Obtener el usuario autenticado
         $user = Auth::user();
+
         if (!$user) {
             return response()->json([
                 'message' => 'User not authenticated.'
@@ -45,10 +61,10 @@ class UserProfileController extends Controller
         $user->position = $request->position;
 
         // Si hay una imagen de perfil, manejar la carga
-        if ($request->hasFile('profile_image')) {
-            $image = $request->file('profile_image');
-            $imagePath = $image->store('profile_images', 'public');
-            $user->profile_image = $imagePath;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imagePath = $image->store('image', 'public');
+            $user->image = $imagePath;
         }
 
         // Guardar los cambios en la base de datos

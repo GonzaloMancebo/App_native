@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { FlatList, Text, TextInput, TouchableOpacity, View, Image, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import moment from 'moment';  // Importamos moment
-import axios from 'axios';  // Importamos Axios
+import moment from 'moment';
+import axios from 'axios';
 import { chatStyles } from '@/styles/chatStyles';
 import { RootStackParamList } from '@/navigation/types';
 
@@ -16,9 +16,13 @@ interface Message {
   id: string;
 }
 
+// Tipamos las props para el componente ChatScreen
+type ChatScreenRouteProp = RouteProp<RootStackParamList, 'ChatScreen'>;
+type ChatScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ChatScreen'>;
+
 type ChatScreenProps = {
-  route: RouteProp<RootStackParamList, 'ChatScreen'>;  // Aquí especificas el tipo de route para 'ChatScreen'
-  navigation: StackNavigationProp<RootStackParamList, 'ChatScreen'>; // Aquí especificas el tipo de navigation
+  route: ChatScreenRouteProp;
+  navigation: ChatScreenNavigationProp;
 };
 
 const ChatScreen: React.FC<ChatScreenProps> = ({ route, navigation }) => {
@@ -51,7 +55,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ route, navigation }) => {
       const newMessage = {
         user_id: userId,  
         message: message,
-        sender: 1, 
+        sender: 'me',  // Suponemos que 'me' es el identificador del usuario
         timestamp: moment().format('YYYY-MM-DD HH:mm:ss')
       };
   
@@ -63,7 +67,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ route, navigation }) => {
   
         // Agregar el mensaje con el ID devuelto por Laravel
         setMessages(prevMessages => [...prevMessages, { ...newMessage, id: String(response.data.id) }]);
-        setMessage('');
+        setMessage('');  // Limpiamos el campo de texto
       })
       .catch(error => {
         console.error('Error al enviar el mensaje:', error.response?.data || error.message);
@@ -71,7 +75,6 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ route, navigation }) => {
     }
   };
   
-
   // Función para manejar el cierre del teclado
   const dismissKeyboard = () => {
     Keyboard.dismiss();
